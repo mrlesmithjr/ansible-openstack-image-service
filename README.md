@@ -63,8 +63,8 @@ openstack_image_service_glance_user_info:
 # keystone_authtoken
 openstack_image_service_keystone_authtoken:
   auth_type: 'password'
-  auth_uri: 'http://{{ openstack_image_service_keystone_service_endpoint_url }}:5000'
-  auth_url: 'http://{{ openstack_image_service_keystone_service_endpoint_url }}:35357'
+  auth_uri: '{{ openstack_image_service_keystone_service_endpoint_url }}:5000'
+  auth_url: '{{ openstack_image_service_keystone_service_endpoint_url }}:35357'
   memcached_servers:
     - 'localhost'
   password: "{{ openstack_image_service_glance_user_info['password'] }}"
