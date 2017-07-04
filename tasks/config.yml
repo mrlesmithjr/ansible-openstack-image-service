@@ -1,0 +1,45 @@
+---
+# https://docs.openstack.org/ocata/install-guide-ubuntu/glance-install.html
+
+- name: config | Configuring /etc/glance/glance-api.conf
+  template:
+    src: "etc/glance/glance-api.conf.j2"
+    dest: "/etc/glance/glance-api.conf"
+    owner: "glance"
+    group: "glance"
+    mode: "u=rw,g=r,o=r"
+  become: true
+  register: "_openstack_image_service_glance_api_conf"
+  notify:
+    - 'restart glance-api'
+
+- name: config | Configuring /etc/glance/glance-registry.conf
+  template:
+    src: "etc/glance/glance-registry.conf.j2"
+    dest: "/etc/glance/glance-registry.conf"
+    owner: "glance"
+    group: "glance"
+    mode: "u=rw,g=r,o=r"
+  become: true
+  register: "_openstack_image_service_glance_registry_conf"
+  notify:
+    - 'restart glance-registry'
+
+- name: config | Checking If Image Service Database Has Already Been Populated
+  stat:
+    path: "/etc/glance/.glance_db_populated"
+  become: true
+  register: "_openstack_image_service_glance_db_populated_check"
+
+- name: config | Populating The Image Service Database
+  command: su -s /bin/sh -c "glance-manage db_sync" glance
+  become: true
+  register: "_openstack_image_service_glance_db_populated"
+  when: not _openstack_image_service_glance_db_populated_check['stat']['exists']
+
+- name: config | Marking The Image Service Database As Being Populated
+  file:
+    path: "/etc/glance/.glance_db_populated"
+    state: "touch"
+  become: true
+  when: _openstack_image_service_glance_db_populated['changed']

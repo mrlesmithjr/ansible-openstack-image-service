@@ -1,0 +1,49 @@
+---
+# defaults file for ansible-openstack-image-service
+
+# glance_store
+openstack_image_service_glance_store:
+  default_store: 'file'
+  filesystem_store_datadir: '/var/lib/glance/images/'
+  stores:
+    - 'file'
+    - 'http'
+
+# Defines Glance DB info
+openstack_image_service_glance_db_info:
+  db: 'glance'
+  user: 'glance'
+  pass: 'glance'
+  host: 'localhost'
+
+
+openstack_image_service_keystone_service_endpoint_region: 'RegionOne'
+
+# Defines the default Keystone endpoint url
+# Do not append the port or api version
+openstack_image_service_keystone_service_endpoint_url: 'http://{{ inventory_hostname }}'
+
+# Defines Glance user info
+openstack_image_service_glance_user_info:
+  name: 'glance'
+  # Generate with openssl rand -hex 10
+  password: []
+  description: 'Glance user'
+  domain_id: 'default'
+  state: 'present'
+  enabled: true
+  role: 'admin'
+  project: 'service'
+
+# keystone_authtoken
+openstack_image_service_keystone_authtoken:
+  auth_type: 'password'
+  auth_uri: 'http://{{ openstack_image_service_keystone_service_endpoint_url }}:5000'
+  auth_url: 'http://{{ openstack_image_service_keystone_service_endpoint_url }}:35357'
+  memcached_servers:
+    - 'localhost'
+  password: "{{ openstack_image_service_glance_user_info['password'] }}"
+  project_domain_name: "{{ openstack_image_service_glance_user_info['domain_id'] }}"
+  project_name: "{{ openstack_image_service_glance_user_info['project'] }}"
+  user_domain_name: "{{ openstack_image_service_glance_user_info['domain_id'] }}"
+  username: "{{ openstack_image_service_glance_user_info['name'] }}"
