@@ -1,15 +1,17 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [ansible-openstack-image-service](#ansible-openstack-image-service)
-  - [Requirements](#requirements)
-  - [Role Variables](#role-variables)
-  - [Dependencies](#dependencies)
-    - [Ansible Roles](#ansible-roles)
-  - [Example Playbook](#example-playbook)
-  - [License](#license)
-  - [Author Information](#author-information)
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Table of Contents**  _generated with [DocToc](https://github.com/thlorenz/doctoc)_
+
+-   [ansible-openstack-image-service](#ansible-openstack-image-service)
+    -   [Requirements](#requirements)
+    -   [Role Variables](#role-variables)
+    -   [Dependencies](#dependencies)
+        -   [Ansible Roles](#ansible-roles)
+    -   [Example Playbook](#example-playbook)
+    -   [License](#license)
+    -   [Author Information](#author-information)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -48,11 +50,12 @@ openstack_image_service_keystone_service_endpoint_region: 'RegionOne'
 # Do not append the port or api version
 openstack_image_service_keystone_service_endpoint_url: 'http://{{ inventory_hostname }}'
 
-# Defines Glance user info
+# Glance info
+# Glance user info
 openstack_image_service_glance_user_info:
   name: 'glance'
   # Generate with openssl rand -hex 10
-  password: []
+  password: '{{ openstack_image_service_glance_user_pass }}'
   description: 'Glance user'
   domain_id: 'default'
   state: 'present'
@@ -60,18 +63,24 @@ openstack_image_service_glance_user_info:
   role: 'admin'
   project: 'service'
 
+## Define Glance user password
+openstack_image_service_glance_user_pass: []
+
 # keystone_authtoken
 openstack_image_service_keystone_authtoken:
   auth_type: 'password'
   auth_uri: '{{ openstack_image_service_keystone_service_endpoint_url }}:5000'
   auth_url: '{{ openstack_image_service_keystone_service_endpoint_url }}:35357'
-  memcached_servers:
-    - 'localhost'
+  memcached_servers: '{{ openstack_image_service_memcached_servers }}'
   password: "{{ openstack_image_service_glance_user_info['password'] }}"
   project_domain_name: "{{ openstack_image_service_glance_user_info['domain_id'] }}"
   project_name: "{{ openstack_image_service_glance_user_info['project'] }}"
   user_domain_name: "{{ openstack_image_service_glance_user_info['domain_id'] }}"
   username: "{{ openstack_image_service_glance_user_info['name'] }}"
+
+# Define memcached servers
+openstack_image_service_memcached_servers:
+  - 127.0.0.1
 ```
 
 ## Dependencies
