@@ -1,6 +1,10 @@
 # {{ ansible_managed }}
 
 [DEFAULT]
+{% set _rabbit_user = openstack_image_service_rabbit_user %}
+{% set _rabbit_pass = openstack_image_service_rabbit_pass %}
+transport_url = rabbit://{% for host in openstack_image_service_rabbit_hosts %}{{ _rabbit_user }}:{{ _rabbit_pass }}@{{ host }}{% if not loop.last %},{% endif %}{% endfor %}
+
 
 [database]
 sqlite_db = /var/lib/glance/glance.sqlite

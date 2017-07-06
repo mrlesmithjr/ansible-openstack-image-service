@@ -44,12 +44,6 @@ openstack_image_service_glance_db_info:
   pass: 'glance'
   host: 'localhost'
 
-openstack_image_service_keystone_service_endpoint_region: 'RegionOne'
-
-# Defines the default Keystone endpoint url
-# Do not append the port or api version
-openstack_image_service_keystone_service_endpoint_url: 'http://{{ inventory_hostname }}'
-
 # Glance info
 # Glance user info
 openstack_image_service_glance_user_info:
@@ -66,6 +60,12 @@ openstack_image_service_glance_user_info:
 ## Define Glance user password
 openstack_image_service_glance_user_pass: []
 
+# HA info
+## Define as true if using HA
+openstack_image_service_ha: false
+## Define host which should be identified as HA master
+openstack_image_service_ha_master: 'controller01'
+
 # keystone_authtoken
 openstack_image_service_keystone_authtoken:
   auth_type: 'password'
@@ -78,9 +78,25 @@ openstack_image_service_keystone_authtoken:
   user_domain_name: "{{ openstack_image_service_glance_user_info['domain_id'] }}"
   username: "{{ openstack_image_service_glance_user_info['name'] }}"
 
+openstack_image_service_keystone_service_endpoint_region: 'RegionOne'
+
+# Defines the default Keystone endpoint url
+# Do not append the port or api version
+openstack_image_service_keystone_service_endpoint_url: 'http://{{ inventory_hostname }}'
+
+# Management IP Info
+openstack_image_service_management_interface: 'enp0s8'
+openstack_image_service_management_ip: "{{ hostvars[inventory_hostname]['ansible_'+openstack_compute_service_compute_management_interface]['ipv4']['address'] }}"
+
 # Define memcached servers
 openstack_image_service_memcached_servers:
   - 127.0.0.1
+
+# RabbitMQ Connection Info
+openstack_image_service_rabbit_hosts:
+  - 127.0.0.1
+openstack_image_service_rabbit_pass: 'openstack'
+openstack_image_service_rabbit_user: 'openstack'
 ```
 
 ## Dependencies

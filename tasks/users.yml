@@ -12,6 +12,10 @@
     default_project: "{{ openstack_image_service_glance_user_info['default_project']|default(omit) }}"
     state: "{{ openstack_image_service_glance_user_info['state'] }}"
   no_log: true
+  when: >
+        not openstack_image_service_ha or
+        (openstack_image_service_ha and
+          inventory_hostname == openstack_image_service_ha_master)
 
 # Create default Glance user role
 - name: users | Creating Glance User Role
@@ -22,3 +26,7 @@
     project: "{{ openstack_image_service_glance_user_info['project'] }}"
     state: "{{ openstack_image_service_glance_user_info['state'] }}"
   no_log: true
+  when: >
+        not openstack_image_service_ha or
+        (openstack_image_service_ha and
+          inventory_hostname == openstack_image_service_ha_master)
